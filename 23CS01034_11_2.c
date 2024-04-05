@@ -1,59 +1,101 @@
 #include <stdio.h>
 #include <stdlib.h>
 #include <string.h>
-#define MAX_SIZE 100
-
-char stack[MAX_SIZE];
-int top = -1;
-void push(char data)
+struct stack
 {
-    if (top == MAX_SIZE - 1)
+    int size;
+    int top;
+    char arr[100];
+};
+int isEmpty(struct stack *ptr)
+{
+    if (ptr->top == -1)
     {
-        printf("Stack Overflow\n");
-        return;
+        return 1;
     }
-    top++;
-    stack[top] = data;
+    else
+    {
+        return 0;
+    }
+}
+int isFull(struct stack *ptr)
+{
+    if (ptr->top == (ptr->size - 1))
+    {
+        return 1;
+    }
+    else
+    {
+        return 0;
+    }
 }
 
-char pop()
+void push(struct stack *ptr, char data)
 {
-    if (top == -1)
+    if (isFull(ptr))
     {
-        printf("Empty Stack\n");
-        return '\0';
+        printf("The stack is full.Cannot perform given operation\n");
     }
-    char data = stack[top];
-    top--;
-    return data;
+    else
+    {
+        ptr->top++;
+        ptr->arr[ptr->top] = data;
+    }
 }
-
+char pop(struct stack *ptr)
+{
+    if (isEmpty(ptr))
+    {
+        printf("The stack is empty.Cannot perform given operation.\n");
+    }
+    else
+    {
+        return ptr->arr[ptr->top--];
+    }
+}
+char stackTop(struct stack *ptr)
+{
+    if (ptr->top == -1)
+    {
+        return -1;
+    }
+    else
+    {
+        return ptr->arr[ptr->top];
+    }
+}
 int main()
 {
-    char string[MAX_SIZE];
-    printf("Input a string: ");
-    fgets(string, MAX_SIZE, stdin);
-    string[strcspn(string, "\n")] = '\0';
-
-    push(string[0]);
-    char x;
-    for(int i = 1;i < strlen(string); ++i){
-        if(stack[top] == string[i]){
-            x = pop();
+    struct stack s1;
+    s1.size = 100;
+    s1.top = -1;
+    char input[100];
+    printf("Enter the input string: ");
+    gets(input);
+    push(&s1, input[0]);
+    int i = 1;
+    while (input[i] != '\0')
+    {
+        if (stackTop(&s1) == input[i])
+        {
+            char temp = pop(&s1);
         }
-        else{
-            push(string[i]);
+        else
+        {
+            push(&s1, input[i]);
         }
+        i++;
     }
-    char ans[MAX_SIZE];
-    ans[top] = '\0';
-    int i = 0;
-    while(top != -1){
-       ans[i] = stack[top] ;
-       x = pop();
-       ++i;
+    char output[i + 1];
+    i = 0;
+    while (!isEmpty(&s1))
+    {
+        output[i] = pop(&s1);
+        i++;
     }
-    strrev(ans);
-    printf("%s", ans);
+    input[i] = '\0';
+    strrev(output);
+    printf("The output string is : ");
+    puts(output);
     return 0;
 }
